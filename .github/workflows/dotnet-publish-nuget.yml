@@ -16,9 +16,6 @@ on:
         default: '9.0.x'
         required: false
         type: string
-        options:
-          - 9.0.x
-          - 8.0.x
       version_prefix:
         description: 'A version prefix: Major and Minor numbers. For example 1.0'
         default: '1.0'
