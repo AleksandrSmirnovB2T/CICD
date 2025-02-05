@@ -45,6 +45,7 @@ jobs:
           patch="${{ github.run_number }}-$(date +%Y%m%d%H%M)"
           echo "major.minor $VERSION_PREFIX, patch $patch"
           echo "VERSION=$VERSION_PREFIX.$patch" >> $GITHUB_ENV
+          echo "Publish nugets of ${{ github.repository }} $VERSION" >> $GITHUB_STEP_SUMMARY
        
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
