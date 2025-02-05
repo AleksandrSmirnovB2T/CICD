@@ -43,7 +43,7 @@ jobs:
       
       - name: Set Version         
         run: |
-          $patch="${{ github.run_number }}-$(date +%Y%m%d%H%M)"
+          patch="${{ github.run_number }}-$(date +%Y%m%d%H%M)"
           echo "major.minor $VERSION_PREFIX, patch $patch"
           echo "VERSION=$VERSION_PREFIX.$patch" >> $GITHUB_ENV
        
