@@ -15,8 +15,8 @@ on:
         description: 'A version dotnet to use.'
         default: '9.0.x'
         required: false
-         type: choice
-         options:
+        type: choice
+        options:
           - 9.0.x
           - 8.0.x
       version_prefix:
