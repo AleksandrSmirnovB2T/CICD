@@ -43,14 +43,19 @@ jobs:
       
       - name: Set Version         
         run: |
-          $(echo -n "$STRING" | sed 's/[[:space:]]*$//')
-          commit_count=$(git rev-list --count HEAD)
-          echo "VERSION=$VERSION_PREFIX.$commit_count-$(date +%Y%m%d%H%M)" >> $GITHUB_ENV
+          $patch="${{ github.run_number }}-$(date +%Y%m%d%H%M)"
+          echo "major.minor $VERSION_PREFIX, patch $patch"
+          echo "VERSION=$VERSION_PREFIX.$patch" >> $GITHUB_ENV
        
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: ${{ inputs.dotnet_version }}
+
+      - name: Configure NuGet Source
+        run: |
+          dotnet nuget remove source github || true
+          dotnet nuget add source --username ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
     
       - name: Pack Projects
         run: |
