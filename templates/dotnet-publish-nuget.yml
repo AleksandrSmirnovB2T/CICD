@@ -1,0 +1,74 @@
+name: publish-nuget
+
+permissions:
+  contents: read
+  packages: write
+
+on:
+  push:
+    branches:
+    - master
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      dotnet_version:
+        description: 'A version dotnet to use.'
+        default: '9.0.x'
+        required: false
+         type: choice
+         options:
+          - 9.0.x
+          - 8.0.x
+      version_prefix:
+        description: 'A version prefix: Major and Minor numbers. For example 1.0'
+        default: '1.0'
+        required: false
+        type: string
+    secrets:
+      packages_write_token:
+        required: true
+
+jobs:
+  pack-and-publish:
+
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Parse version prefix
+        run: |
+          if [[ "${{ inputs.version_prefix }}" =~ ^([0-9]+)\.([0-9]+)$ ]]; then
+            major="${BASH_REMATCH[1]}"
+            minor="${BASH_REMATCH[2]}"
+            echo "Major: $major, Minor: $minor"
+            echo "VERSION_PREFIX=$major.$minor" >> $GITHUB_ENV
+          else
+            echo "Invalid version_prefix"
+            exit 1
+          fi
+      
+      - name: Set Version         
+        run: |
+          $(echo -n "$STRING" | sed 's/[[:space:]]*$//')
+          commit_count=$(git rev-list --count HEAD)
+          echo "VERSION=$VERSION_PREFIX.$commit_count-$(date +%Y%m%d%H%M)" >> $GITHUB_ENV
+       
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ inputs.dotnet_version }}
+    
+      - name: Pack Projects
+        run: |
+          mkdir -p nupkgs
+        
+          dotnet pack --output nupkgs -p:PackageVersion=${VERSION}
+
+      - name: Push packages
+        run: |
+          for f in ./nupkgs/*.nupkg
+          do
+            echo "Pushing package: $f"
+            dotnet nuget push "$f" --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" --api-key ${{ secrets.packages_write_token }}
+          done
