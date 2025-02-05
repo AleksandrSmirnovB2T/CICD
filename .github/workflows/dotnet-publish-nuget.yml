@@ -51,13 +51,23 @@ jobs:
         with:
           dotnet-version: ${{ inputs.dotnet_version }}
 
-      - name: Pack Projects
+      - name: Configure NuGet
         run: |
-          mkdir -p nupkgs
+          mkdir -p packages
+          dotnet new nugetconfig --name nuget.config --output ./packages
+          cat ./packages/nuget.config
+          dotnet nuget add source --name github --username ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" --configfile ./packages/nuget.config
 
-          # dotnet nuget update source AleksandrSmirnovB2T -s https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json --username AleksandrSmirnovB2T --password ${{ secrets.packages_write_token }} --store-password-in-clear-text
-        
-          dotnet pack --output nupkgs -p:PackageVersion=${VERSION}
+      - name: Restore
+        run: dotnet restore --configfile ./packages/nuget.config
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+          
+      - name: Pack
+        run: |
+          mkdir -p nupkgs        
+          dotnet pack --no-build --no-restore --output nupkgs -p:PackageVersion=${VERSION}
 
       - name: Push packages
         run: |
