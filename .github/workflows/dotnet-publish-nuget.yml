@@ -23,9 +23,6 @@ on:
 
 jobs:
   pack-and-publish:
-    permissions:
-      packages: write
-      contents: read
     runs-on: ubuntu-latest
     
     steps:
@@ -58,7 +55,7 @@ jobs:
         run: |
           mkdir -p nupkgs
 
-          dotnet nuget update source AleksandrSmirnovB2T -s https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json --username AleksandrSmirnovB2T --password ${{ secrets.packages_write_token }} --store-password-in-clear-text
+          # dotnet nuget update source AleksandrSmirnovB2T -s https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json --username AleksandrSmirnovB2T --password ${{ secrets.packages_write_token }} --store-password-in-clear-text
         
           dotnet pack --output nupkgs -p:PackageVersion=${VERSION}
 
