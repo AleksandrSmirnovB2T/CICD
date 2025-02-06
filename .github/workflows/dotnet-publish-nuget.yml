@@ -73,18 +73,22 @@ jobs:
           dotnet-version: ${{ inputs.dotnet_version }}
 
       - name: Configure NuGet
+        if: ${{ success() }}
         run: |
           mkdir -p packages
           dotnet new nugetconfig --name nuget.config --output ./packages
           dotnet nuget add source --name github --username ${{ github.actor }} --password ${{ secrets.packages_write_token }} --store-password-in-clear-text "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" --configfile ./packages/nuget.config
 
       - name: Restore
+        if: ${{ success() }}
         run: dotnet restore ${{ inputs.solution_path }} --configfile ./packages/nuget.config
 
       - name: Build
+        if: ${{ success() }}
         run: dotnet build ${{ inputs.solution_path }} --configuration Release --no-restore
           
       - name: Pack
+        if: ${{ success() }}
         run: |
           mkdir -p nupkgs
           mapfile -t changed_projects <<< "$(echo -e "${CHANGED_PROJECTS}")"
