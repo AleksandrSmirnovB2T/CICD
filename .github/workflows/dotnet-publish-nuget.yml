@@ -67,6 +67,7 @@ jobs:
           echo "VERSION=$VERSION_PREFIX.$patch" >> $GITHUB_ENV
        
       - name: Setup .NET
+        if: env.CHANGED_PROJECTS != ''
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: ${{ inputs.dotnet_version }}
