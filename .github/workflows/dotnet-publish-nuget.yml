@@ -90,7 +90,7 @@ jobs:
       - name: Pack
         run: |
           mkdir -p nupkgs
-          IFS=$'\n' read -r -d '' -a changed_projects < <(${CHANGED_PROJECTS}; printf '\0')
+          mapfile -t changed_projects <<< "$(echo -e "${CHANGED_PROJECTS}")"
           if [[ -z "$changed_projects" ]]; then
             echo "No changed projects found. Skip"
           else
