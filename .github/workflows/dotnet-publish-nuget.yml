@@ -49,8 +49,10 @@ jobs:
           echo "Make script executable"
           chmod +x tools/scripts/detect_changed_projects.sh
           echo "before run script"
-          changed_projects=$(./tools/scripts/detect_changed_projects.sh)
-          echo "### $changed_projects ###"
+          changed_projects=$(./tools/scripts/detect_changed_projects.sh 3>&1 1>/dev/null)
+          IFS=$'\n' read -r -d '' -a pr < <(changed_projects; printf '\0')
+          echo "### ${pr[@]} ###"
+          echo "CHANGED_PROJECTS=$changed_projects" >> $GITHUB_ENV
 
       - name: Parse version prefix
         run: |
@@ -90,18 +92,12 @@ jobs:
       - name: Pack
         run: |
           mkdir -p nupkgs
-          echo "changes $(git diff --name-only)"
-          echo "changes 2 $(git diff --name-only HEAD~ HEAD)"
-          
-          echo "Make script executable"
-          chmod +x tools/scripts/detect_changed_projects.sh
-          echo "before run script"
-          changed_projects=$(./tools/scripts/detect_changed_projects.sh)
+          IFS=$'\n' read -r -d '' -a changed_projects < <(${CHANGED_PROJECTS}; printf '\0')
           if [[ -z "$changed_projects" ]]; then
             echo "No changed projects found. Skip"
           else
-            echo "### $changed_projects ###"
-            for project in $changed_projects; do
+            echo "### ${changed_projects[@]} ###"
+            for project in "${changed_projects[@]}"; do
               echo "Project file: $project"
               dotnet pack $project --no-build --no-restore --output nupkgs -p:PackageVersion=${VERSION}
             done

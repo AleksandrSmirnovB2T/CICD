@@ -17,20 +17,18 @@ detect_changed_projects() {
         done
     done
 
-    for project in "${!changed_projects[@]}"; do
-        echo "$project"
-    done
+    printf "%s\n" "${!changed_projects[@]}"
 }
 
 
 if [[ "$1" != "test" ]]; then
     changed_files=$(git diff --name-only HEAD~ HEAD | xargs realpath --relative-to="$(pwd)")
     for f in $changed_files; do
-        echo "Changes file $f"
+        echo "Changes file $f" >&3
     done
     project_files=$(find . -name "*.csproj" -print | xargs realpath --relative-to="$(pwd)")
     for f in $project_files; do
-        echo "Project file $f"
+        echo "Project file $f" >&3
     done
     detect_changed_projects "$changed_files" "$project_files"
 else
