@@ -24,11 +24,11 @@ detect_changed_projects() {
 
 
 if [[ "$1" != "test" ]]; then
-    changed_files=$(git diff --name-only)
+    changed_files=$(git diff --name-only HEAD~ HEAD | xargs realpath --relative-to="$(pwd)")
     for f in $changed_files; do
         echo "Changes file $f"
     done
-    project_files=$(find . -name "*.csproj" -print)
+    project_files=$(find . -name "*.csproj" -print | xargs realpath --relative-to="$(pwd)")
     for f in $project_files; do
         echo "Project file $f"
     done
