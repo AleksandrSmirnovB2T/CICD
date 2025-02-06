@@ -17,6 +17,10 @@ on:
         default: '1.0'
         required: false
         type: string
+      solution_path:
+        description: 'Path to *.sln file. By default, the root folder.'
+        required: false
+        type: string
     secrets:
       packages_write_token:
         required: true
@@ -45,7 +49,6 @@ jobs:
           patch="${{ github.run_number }}-$(date +%Y%m%d%H%M)"
           echo "major.minor $VERSION_PREFIX, patch $patch"
           echo "VERSION=$VERSION_PREFIX.$patch" >> $GITHUB_ENV
-          echo "Publish nugets of ${{ github.repository }} ${VERSION}" >> $GITHUB_STEP_SUMMARY
        
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
@@ -59,15 +62,15 @@ jobs:
           dotnet nuget add source --name github --username ${{ github.actor }} --password ${{ secrets.packages_write_token }} --store-password-in-clear-text "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" --configfile ./packages/nuget.config
 
       - name: Restore
-        run: dotnet restore --configfile ./packages/nuget.config
+        run: dotnet restore ${{ inputs.solution_path }} --configfile ./packages/nuget.config
 
       - name: Build
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet build ${{ inputs.solution_path }} --configuration Release --no-restore
           
       - name: Pack
         run: |
           mkdir -p nupkgs        
-          dotnet pack --no-build --no-restore --output nupkgs -p:PackageVersion=${VERSION}
+          dotnet pack ${{ inputs.solution_path }} --no-build --no-restore --output nupkgs -p:PackageVersion=${VERSION}
 
       - name: Push packages
         run: |
