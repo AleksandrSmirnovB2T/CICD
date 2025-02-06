@@ -1,5 +1,7 @@
 name: publish-nuget
 
+run-name: Publish version ${VERSION}
+
 permissions:
   packages: write
   contents: read
