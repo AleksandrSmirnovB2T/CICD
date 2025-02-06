@@ -24,8 +24,8 @@ detect_changed_projects() {
 
 
 if [[ "$1" != "test" ]]; then
-    changed_files=$(git diff --name-only | xargs realpath --relative-to="$(pwd)")
-    project_files=$(find . -name "*.csproj" -print | xargs realpath --relative-to="$(pwd)")
+    changed_files=$(git diff --name-only)
+    project_files=$(find . -name "*.csproj" -print)
     detect_changed_projects "$changed_files" "$project_files"
 else
     detect_changed_projects "$2" "$3"     
