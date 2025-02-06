@@ -43,13 +43,9 @@ jobs:
 
       - name: Detect changes
         run: |
-          echo "changes $(git diff --name-only HEAD~ HEAD)"
-          
-          echo "Make script executable"
           chmod +x tools/scripts/detect_changed_projects.sh
-          echo "before run script"
           changed_projects=$(./tools/scripts/detect_changed_projects.sh)
-          echo "### $changed_projects ###"
+          echo "changed_projects: $changed_projects"
           echo "CHANGED_PROJECTS=$changed_projects" >> $GITHUB_ENV
 
       - name: Parse version prefix
@@ -94,9 +90,8 @@ jobs:
           if [[ -z "$changed_projects" ]]; then
             echo "No changed projects found. Skip"
           else
-            echo "### ${changed_projects[@]} ###"
             for project in "${changed_projects[@]}"; do
-              echo "Project file: $project"
+              echo "Pack project: $project"
               dotnet pack $project --no-build --no-restore --output nupkgs -p:PackageVersion=${VERSION}
             done
           fi
