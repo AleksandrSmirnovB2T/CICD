@@ -22,13 +22,13 @@ detect_changed_projects() {
 
 
 if [[ "$1" != "test" ]]; then
-    changed_files=$(git diff --name-only HEAD~ HEAD)
+    changed_files=$(git diff --name-only master HEAD)
     if [[ -z "$changed_files" ]]; then
       #echo "No changed files" >&3
       exit 0
     fi
 
-    changed_files=$(git diff --name-only HEAD~ HEAD | xargs realpath --relative-to="$(pwd)")
+    changed_files=$(git diff --name-only master HEAD | xargs realpath --relative-to="$(pwd)")
     # for f in $changed_files; do
     #     echo "Changes file $f" >&3
     # done
