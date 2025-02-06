@@ -30,7 +30,14 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout own repository
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout caller repository
+        uses: actions/checkout@v4
 
       - name: Parse version prefix
         run: |
