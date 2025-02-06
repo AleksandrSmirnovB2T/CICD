@@ -77,6 +77,7 @@ jobs:
       - name: Pack
         run: |
           mkdir -p nupkgs
+          chmod +x ./tools/scripts/detect_changed_projects.sh
           changed_projects=$(./tools/scripts/detect_changed_projects.sh)
           for project in changed_projects
           do 
