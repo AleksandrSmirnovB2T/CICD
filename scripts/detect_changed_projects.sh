@@ -25,7 +25,13 @@ detect_changed_projects() {
 
 if [[ "$1" != "test" ]]; then
     changed_files=$(git diff --name-only)
+    for f in $changed_files; do
+        echo "Changes file $f"
+    done
     project_files=$(find . -name "*.csproj" -print)
+    for f in $project_files; do
+        echo "Project file $f"
+    done
     detect_changed_projects "$changed_files" "$project_files"
 else
     detect_changed_projects "$2" "$3"     
