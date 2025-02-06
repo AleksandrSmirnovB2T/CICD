@@ -84,8 +84,8 @@ jobs:
           if [[ -z "$changed_projects" ]]; then
             echo "No changed projects found. Skip"
           else
-            for project in $changed_projects
-            do
+            echo "### $changed_projects ###"
+            for project in $changed_projects; do
               echo "Project file: $project"
               dotnet pack $project --no-build --no-restore --output nupkgs -p:PackageVersion=${VERSION}
             done
@@ -94,8 +94,7 @@ jobs:
       - name: Push packages
         if: hashFiles('./nupkgs/*.nupkg')
         run: |
-          for f in ./nupkgs/*.nupkg
-          do
+          for f in ./nupkgs/*.nupkg; do
             echo "Pushing package: $f"
             dotnet nuget push "$f" --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" --api-key ${{ secrets.packages_write_token }}
           done
