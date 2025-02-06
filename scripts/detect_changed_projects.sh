@@ -24,25 +24,25 @@ detect_changed_projects() {
 if [[ "$1" != "test" ]]; then
     changed_files=$(git diff --name-only HEAD~ HEAD)
     if [[ -z "$changed_files" ]]; then
-      echo "No changed files" >&3
+      #echo "No changed files" >&3
       exit 0
     fi
 
     changed_files=$(git diff --name-only HEAD~ HEAD | xargs realpath --relative-to="$(pwd)")
-    for f in $changed_files; do
-        echo "Changes file $f" >&3
-    done
+    # for f in $changed_files; do
+    #     echo "Changes file $f" >&3
+    # done
 
     project_files=$(find . -name "*.csproj" -print)
     if [[ -z "$project_files" ]]; then
-      echo "No csproj files" >&3
+      #echo "No csproj files" >&3
       exit 0
     fi
 
     project_files=$(find . -name "*.csproj" -print | xargs realpath --relative-to="$(pwd)")
-    for f in $project_files; do
-        echo "Project file $f" >&3
-    done
+    # for f in $project_files; do
+    #     echo "Project file $f" >&3
+    # done
 
     detect_changed_projects "$changed_files" "$project_files"
 else
