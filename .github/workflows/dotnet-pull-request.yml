@@ -29,12 +29,6 @@ on:
       packages_write_token:
         required: true
 
-permissions:
-  contents: read
-  actions: read
-  packages: read
-  checks: write    
-
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
