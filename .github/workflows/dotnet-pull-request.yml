@@ -53,11 +53,26 @@ jobs:
 
       - name: Build
         run: dotnet build ${{ inputs.solution_path }} --configuration Release --no-restore
+
+      - name: Save build folder
+        uses: actions/upload-artifact@v3
+        with:
+          name: built
+          path: sources
   
   test:
     runs-on: ubuntu-latest
     needs: build
-    steps:       
+    steps:
+      - name: Checkout caller repository
+        uses: actions/checkout@v4
+
+      - name: Download the built folder
+        uses: actions/download-artifact@3
+        with:
+          name: built
+          path: sources
+
       - name: Unit tests
         run:  dotnet test ${{ inputs.test_path }} --no-build --no-restore --logger "trx;LogFileName=TestResults.trx" --filter "FullyQualifiedName!~Integration"
 
