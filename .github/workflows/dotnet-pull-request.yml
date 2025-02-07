@@ -6,7 +6,8 @@ permissions:
   contents: read
   actions: read
   packages: read
-  checks: write 
+  checks: write
+  security-events: write
 
 on:
   workflow_call:
@@ -71,3 +72,12 @@ jobs:
           name: Test Results
           path: "**/TestResults.trx"
           reporter: dotnet-trx
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          languages: csharp
+          build-mode: none
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
