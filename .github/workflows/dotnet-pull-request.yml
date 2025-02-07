@@ -41,7 +41,6 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ inputs.dotnet_version }}
-          cache: true
 
       - name: Configure NuGet
         run: |
