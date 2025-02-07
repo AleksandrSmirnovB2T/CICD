@@ -22,8 +22,8 @@ on:
         required: false
         type: string
       test_path:
-        description: 'Path to *.dll files of tests. By default, it is `./tests/**/*.Tests.dll`.'
-        default: './tests/**/*.Tests.dll'
+        description: 'Path to *.dll files of tests. By default, it is `*.Tests.dll`.'
+        default: '*.Tests.dll'
         required: false
         type: string
     secrets:
@@ -77,7 +77,7 @@ jobs:
           path: built
 
       - name: Unit tests
-        run:  dotnet test ${{ inputs.test_path }} --no-build --no-restore --logger "trx;LogFileName=TestResults.trx" --filter "FullyQualifiedName!~Integration"
+        run:  dotnet test built/${{ inputs.test_path }} --no-build --no-restore --logger "trx;LogFileName=TestResults.trx" --filter "FullyQualifiedName!~Integration"
 
       - name: Upload Test Results
         if: always()
