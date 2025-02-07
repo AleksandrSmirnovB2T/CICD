@@ -1,0 +1,73 @@
+name: pull-request
+
+run-name: Pull request ${{ github.event.pull_request.title }}
+
+on:
+  workflow_call:
+    inputs:
+      dotnet_version:
+        description: 'A version dotnet to use.'
+        default: '9.0.x'
+        required: false
+        type: string
+      solution_path:
+        description: 'Path to *.sln file. By default, the root folder.'
+        required: false
+        type: string
+      test_path:
+        description: 'Path to *.dll files of tests. By default, it is `./tests/**/*.Tests.dll`.'
+        default: './tests/**/*.Tests.dll'
+        required: false
+        type: string
+    secrets:
+      packages_write_token:
+        required: true
+
+permissions:
+  contents: read
+  actions: read
+  packages: read
+  checks: write    
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:      
+      - name: Checkout caller repository
+        uses: actions/checkout@v4
+       
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ inputs.dotnet_version }}
+
+      - name: Configure NuGet
+        run: |
+          mkdir -p packages
+          dotnet new nugetconfig --name nuget.config --output ./packages
+          dotnet nuget add source --name github --username ${{ github.actor }} --password ${{ secrets.packages_write_token }} --store-password-in-clear-text "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" --configfile ./packages/nuget.config
+
+      - name: Restore
+        run: dotnet restore ${{ inputs.solution_path }} --configfile ./packages/nuget.config
+
+      - name: Build
+        run: dotnet build ${{ inputs.solution_path }} --configuration Release --no-restore
+          
+      - name: Unit tests
+        run:  dotnet test ${{ inputs.test_path }} --no-build --no-restore --logger "trx;LogFileName=TestResults.trx" --filter "FullyQualifiedName!~Integration"
+
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TestResults
+          path: "**/TestResults.trx"
+
+      - name: Publish Test Results
+        if: always()
+        uses: dorny/test-reporter@v1
+        with:
+          name: Test Results
+          path: "**/TestResults.trx"
+          reporter: dotnet-trx
