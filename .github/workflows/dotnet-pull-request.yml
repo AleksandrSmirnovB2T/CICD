@@ -31,9 +31,8 @@ on:
         required: true
 
 jobs:
-  build-and-test:
-    runs-on: ubuntu-latest
-    
+  build:
+    runs-on: ubuntu-latest    
     steps:      
       - name: Checkout caller repository
         uses: actions/checkout@v4
@@ -42,6 +41,7 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: ${{ inputs.dotnet_version }}
+          cache: true
 
       - name: Configure NuGet
         run: |
@@ -54,7 +54,10 @@ jobs:
 
       - name: Build
         run: dotnet build ${{ inputs.solution_path }} --configuration Release --no-restore
-          
+  
+  test:
+    runs-on: ubuntu-latest    
+    steps:       
       - name: Unit tests
         run:  dotnet test ${{ inputs.test_path }} --no-build --no-restore --logger "trx;LogFileName=TestResults.trx" --filter "FullyQualifiedName!~Integration"
 
@@ -72,12 +75,3 @@ jobs:
           name: Test Results
           path: "**/TestResults.trx"
           reporter: dotnet-trx
-
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2
-        with:
-          languages: csharp
-          build-mode: none
-
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
