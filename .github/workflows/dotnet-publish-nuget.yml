@@ -19,6 +19,11 @@ on:
         default: '1.0'
         required: false
         type: string
+      prerelease:
+        description: 'Flag, that forces generating prerelease version, overwise prerelease version is generated for not-master based workflow.'
+        default: false
+        required: false
+        type: boolean
       solution_path:
         description: 'Path to *.sln file. By default, the root folder.'
         required: false
@@ -66,7 +71,7 @@ jobs:
         run: |
           RUN_NUMBER="${{ github.run_number }}"
 
-          if [[ "${{ github.ref }}" == "refs/heads/master" ]]; then
+          if [[ "${PRERELEASE,,}" != "true" || "${{ github.ref }}" == "refs/heads/master" ]]; then
             PATCH_VERSION="$RUN_NUMBER"
           else
             TIMESTAMP=$(date +%Y%m%d%H%M)
