@@ -64,9 +64,17 @@ jobs:
       
       - name: Set Version         
         run: |
-          patch="${{ github.run_number }}-$(date +%Y%m%d%H%M)"
-          echo "major.minor $VERSION_PREFIX, patch $patch"
-          echo "VERSION=$VERSION_PREFIX.$patch" >> $GITHUB_ENV
+          RUN_NUMBER="${{ github.run_number }}"
+
+          if [[ "${{ github.ref }}" == "refs/heads/master" ]]; then
+            PATCH_VERSION="$RUN_NUMBER"
+          else
+            TIMESTAMP=$(date +%Y%m%d%H%M)
+            PATCH_VERSION="$RUN_NUMBER-$TIMESTAMP"
+          fi
+          
+          echo "major.minor $VERSION_PREFIX, patch $PATCH_VERSION"
+          echo "VERSION=$VERSION_PREFIX.$PATCH_VERSION" >> $GITHUB_ENV
        
       - name: Setup .NET
         if: env.CHANGED_PROJECTS != ''
