@@ -71,7 +71,7 @@ jobs:
         run: |
           RUN_NUMBER="${{ github.run_number }}"
 
-          if [[ "${PRERELEASE,,}" != "true" || "${{ github.ref }}" == "refs/heads/master" ]]; then
+          if [[ "${PRERELEASE,,}" != "true" && "${{ github.ref }}" == "refs/heads/master" ]]; then
             PATCH_VERSION="$RUN_NUMBER"
           else
             TIMESTAMP=$(date +%Y%m%d%H%M)
