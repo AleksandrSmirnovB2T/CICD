@@ -81,7 +81,7 @@ jobs:
           
           VERSION=$VERSION_PREFIX.$PATCH_VERSION
           echo "major.minor $VERSION_PREFIX, patch $PATCH_VERSION"
-          echo VERSION >> $GITHUB_ENV
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
        
       - name: Setup .NET
         if: env.CHANGED_PROJECTS != ''
