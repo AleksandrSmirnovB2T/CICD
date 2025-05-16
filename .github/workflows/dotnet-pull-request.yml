@@ -26,6 +26,8 @@ on:
     secrets:
       packages_read_token:
         required: true
+      push_code_token:
+        required: true
 
 jobs:
   build:
@@ -105,3 +107,4 @@ jobs:
         uses: AleksandrSmirnovB2T/CICD/.github/actions/trx-parser@master
         with:
           path: "TestResults/TestResults.trx"
+          token: ${{ secrets.push_code_token }}
