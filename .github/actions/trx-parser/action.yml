@@ -25,15 +25,17 @@ runs:
         # git switch --force-create gh-pages
         # TARGET="https://$USER_NAME:$API_TOKEN_GITHUB@github.com/$DESTINATION_REPOSITORY_USERNAME/$DESTINATION_REPOSITORY_NAME.git"
         TARGET="https://AleksandrSmirnovB2T:${{ inputs.token }}@github.com/AleksandrSmirnovB2T/CICD"
-        git clone --single-branch --branch "$TARGET_BRANCH" "$TARGET" .
+        mkdir pages
+        git clone --single-branch --branch "$TARGET_BRANCH" "$TARGET" pages
 
 
         # Clear existing content and copy report
         ls -la
         # rm -rf *
-        cp report.html index.html
+        cp report.html pages/index.html
 
         # Commit and push
+        cd pages
         git add index.html
         git commit -m "Update test report at $(date -u +"%Y-%m-%d %H:%M:%S")" || echo "Nothing to commit"
         git push "$TARGET"
