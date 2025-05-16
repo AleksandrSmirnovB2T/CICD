@@ -97,6 +97,6 @@ jobs:
       #    reporter: dotnet-trx
 
       - name: Publish Test Results
-        uses: AleksandrSmirnovB2T/CICD/actions/trx-parser@master
+        uses: AleksandrSmirnovB2T/CICD/.github/actions/trx-parser@master
         with:
           path: ./TestResults/*.trx
