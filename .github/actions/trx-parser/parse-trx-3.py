@@ -3,12 +3,11 @@ import sys
 import xml.etree.ElementTree as ET
 from collections import defaultdict
 
-if len(sys.argv) < 3:
-    print("Usage: python parse_trx.py <path-to-trx-file> <output-html-file>")
+if len(sys.argv) < 2:
+    print("Usage: python parse_trx.py <path-to-trx-file>")
     sys.exit(1)
 
 trx_file = sys.argv[1]
-output_html = sys.argv[2]
 
 if not os.path.isfile(trx_file):
     print(f"❌ Error: File not found: {trx_file}")
@@ -16,7 +15,12 @@ if not os.path.isfile(trx_file):
 
 NS = {'t': 'http://microsoft.com/schemas/VisualStudio/TeamTest/2010'}
 
-tree = ET.parse(trx_file)
+try:
+    tree = ET.parse(trx_file)
+except ET.ParseError as e:
+    print(f"❌ Failed to parse XML: {e}")
+    sys.exit(1)
+
 root = tree.getroot()
 
 results = root.find('t:Results', NS)
@@ -34,7 +38,7 @@ for ut in definitions.findall('t:UnitTest', NS):
     testId_to_suite[test_id] = class_name
 
 # Collect test results
-suites = defaultdict(lambda: {'Passed': [], 'Failed': [], 'Skipped': [], 'Durations': []})
+suites = defaultdict(lambda: {'Passed': 0, 'Failed': 0, 'Skipped': 0, 'Durations': []})
 detailed_tests = []
 
 for result in results.findall('t:UnitTestResult', NS):
@@ -44,7 +48,7 @@ for result in results.findall('t:UnitTestResult', NS):
     test_id = result.attrib.get('testId')
     suite = testId_to_suite.get(test_id, "Unknown")
 
-    suites[suite][outcome].append(test_name)
+    suites[suite][outcome] += 1
     suites[suite]['Durations'].append(duration)
 
     detailed_tests.append({
@@ -66,7 +70,7 @@ with open(SUMMARY_FILE, "a") as f:
         except ValueError:
             total_duration = 0.0
 
-        f.write(f"| {suite} | {len(data['Passed'])} | {len(data['Failed'])} | {len(data['Skipped'])} | {total_duration:.2f} |\n")
+        f.write(f"| {suite} | {data['Passed']} | {data['Failed']} | {data['Skipped']} | {total_duration:.2f} |\n")
 
     f.write("\n---\n")
 
