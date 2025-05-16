@@ -4,6 +4,8 @@ inputs:
   path:
     description: 'Path to the .trx test report'
     required: true
+  token:
+    required: true
 
 runs:
   using: "composite"
@@ -19,8 +21,12 @@ runs:
         git config --global user.email "github-actions@github.com"
 
         # Create worktree for gh-pages branch
-        git fetch origin gh-pages || git checkout --orphan gh-pages
-        git switch --force-create gh-pages
+        # git fetch origin gh-pages || git checkout --orphan gh-pages
+        # git switch --force-create gh-pages
+        # TARGET="https://$USER_NAME:$API_TOKEN_GITHUB@github.com/$DESTINATION_REPOSITORY_USERNAME/$DESTINATION_REPOSITORY_NAME.git"
+        TARGET=""https://AleksandrSmirnovB2T:${{ inputs.token }}@github.com/AleksandrSmirnovB2T/CICD"
+        git clone --single-branch --branch "$TARGET_BRANCH" "$TARGET" .
+
 
         # Clear existing content and copy report
         ls -la
@@ -30,6 +36,5 @@ runs:
         # Commit and push
         git add index.html
         git commit -m "Update test report at $(date -u +"%Y-%m-%d %H:%M:%S")" || echo "Nothing to commit"
-        git push origin gh-pages
-        #git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} gh-pages
+        git push "$TARGET"
 
