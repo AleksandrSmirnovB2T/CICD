@@ -12,7 +12,7 @@ runs:
   steps:
     - name: Run Python parser
       shell: bash
-      run: python3 "${{ github.action_path }}/parse-trx-2.py" "${{ inputs.path }}" report.html
+      run: python3 "${{ github.action_path }}/parse-trx-3.py" "${{ inputs.path }}" report.html
 
     - name: Publish report to gh-pages branch
       shell: bash
