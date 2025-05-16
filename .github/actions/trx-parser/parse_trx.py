@@ -9,10 +9,19 @@ if len(sys.argv) < 2:
 
 trx_file = sys.argv[1]
 
-NS = {'t': 'http://microsoft.com/schemas/VisualStudio/TeamTest/2010'}
-tree = ET.parse(trx_file)
-root = tree.getroot()
+if not os.path.isfile(trx_file):
+    print(f"❌ Error: File not found: {trx_file}")
+    sys.exit(1)
 
+NS = {'t': 'http://microsoft.com/schemas/VisualStudio/TeamTest/2010'}
+
+try:
+    tree = ET.parse(trx_file)
+except ET.ParseError as e:
+    print(f"❌ Failed to parse XML: {e}")
+    sys.exit(1)
+
+root = tree.getroot()
 results = root.find('t:Results', NS)
 if results is None:
     print("No <Results> found in TRX file.")

@@ -99,4 +99,4 @@ jobs:
       - name: Publish Test Results
         uses: AleksandrSmirnovB2T/CICD/.github/actions/trx-parser@master
         with:
-          path: ./TestResults/*.trx
+          path: "**/TestResults.trx"
