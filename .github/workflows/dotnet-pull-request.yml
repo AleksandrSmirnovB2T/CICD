@@ -88,6 +88,11 @@ jobs:
           name: TestResults
           path: "**/TestResults.trx"
 
+      - name: find trx file
+        run: |
+          ls -la
+          ls TestResults/TestResults.trx
+
       #- name: Publish Test Results
       #  if: always()
       #  uses: dorny/test-reporter@v1
@@ -99,4 +104,4 @@ jobs:
       - name: Publish Test Results
         uses: AleksandrSmirnovB2T/CICD/.github/actions/trx-parser@master
         with:
-          path: "**/TestResults.trx"
+          path: "TestResults/TestResults.trx"
