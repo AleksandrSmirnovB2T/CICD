@@ -13,6 +13,7 @@ runs:
       run: python3 "${{ github.action_path }}/parse_trx-2.py" "${{ inputs.path }}" report.html
 
     - name: Publish report to gh-pages branch
+      shell: bash
       run: |
         git config --global user.name "github-actions"
         git config --global user.email "github-actions@github.com"
