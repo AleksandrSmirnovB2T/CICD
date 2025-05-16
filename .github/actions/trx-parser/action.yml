@@ -1,0 +1,13 @@
+name: Parse .trx Test Results
+description: Parse .NET .trx test report and summarize results in step summary
+inputs:
+  path:
+    description: 'Path to the .trx test report'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Run Python parser
+      shell: bash
+      run: python3 "${{ github.action_path }}/parse_trx.py" "${{ inputs.path }}"

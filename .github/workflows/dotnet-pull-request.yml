@@ -88,10 +88,15 @@ jobs:
           name: TestResults
           path: "**/TestResults.trx"
 
+      #- name: Publish Test Results
+      #  if: always()
+      #  uses: dorny/test-reporter@v1
+      #  with:
+      #    name: Test Results
+      #    path: "**/TestResults.trx"
+      #    reporter: dotnet-trx
+
       - name: Publish Test Results
-        if: always()
-        uses: dorny/test-reporter@v1
+        uses: B2Tech-Git/platform-cicd/trx-parser@master
         with:
-          name: Test Results
-          path: "**/TestResults.trx"
-          reporter: dotnet-trx
+          path: ./TestResults/*.trx
