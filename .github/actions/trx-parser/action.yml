@@ -38,5 +38,5 @@ runs:
         cd pages
         git add index.html
         git commit -m "Update test report at $(date -u +"%Y-%m-%d %H:%M:%S")" || echo "Nothing to commit"
-        git push "$TARGET"
+        git push "$TARGET" --set-upstream master
 
