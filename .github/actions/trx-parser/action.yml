@@ -26,7 +26,7 @@ runs:
         # TARGET="https://$USER_NAME:$API_TOKEN_GITHUB@github.com/$DESTINATION_REPOSITORY_USERNAME/$DESTINATION_REPOSITORY_NAME.git"
         TARGET="https://AleksandrSmirnovB2T:${{ inputs.token }}@github.com/AleksandrSmirnovB2T/PipelineTest"
         mkdir pages
-        git clone --single-branch --branch "$TARGET_BRANCH" "$TARGET" pages
+        git clone --single-branch --branch master "$TARGET" pages
 
 
         # Clear existing content and copy report
