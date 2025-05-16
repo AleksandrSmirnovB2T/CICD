@@ -14,31 +14,31 @@ runs:
       shell: bash
       run: python3 "${{ github.action_path }}/parse-trx-3.py" "${{ inputs.path }}" report.html
 
-    - name: Publish report to gh-pages branch
-      shell: bash
-      run: |
-        git config --global user.name "github-actions"
-        git config --global user.email "github-actions@github.com"
+    # - name: Publish report to gh-pages branch
+    #   shell: bash
+    #   run: |
+    #     git config --global user.name "github-actions"
+    #     git config --global user.email "github-actions@github.com"
 
-        # Create worktree for gh-pages branch
-        # git fetch origin gh-pages || git checkout --orphan gh-pages
-        # git switch --force-create gh-pages
-        # TARGET="https://$USER_NAME:$API_TOKEN_GITHUB@github.com/$DESTINATION_REPOSITORY_USERNAME/$DESTINATION_REPOSITORY_NAME.git"
-        TARGET="https://AleksandrSmirnovB2T:${{ inputs.token }}@github.com/AleksandrSmirnovB2T/PipelineTest"
-        mkdir pages
-        git clone --single-branch --branch master "$TARGET" pages
+    #     # Create worktree for gh-pages branch
+    #     # git fetch origin gh-pages || git checkout --orphan gh-pages
+    #     # git switch --force-create gh-pages
+    #     # TARGET="https://$USER_NAME:$API_TOKEN_GITHUB@github.com/$DESTINATION_REPOSITORY_USERNAME/$DESTINATION_REPOSITORY_NAME.git"
+    #     TARGET="https://AleksandrSmirnovB2T:${{ inputs.token }}@github.com/AleksandrSmirnovB2T/PipelineTest"
+    #     mkdir pages
+    #     git clone --single-branch --branch master "$TARGET" pages
 
 
-        # Clear existing content and copy report
-        ls -la
-        # rm -rf *
-        cp report.html pages/index.html
+    #     # Clear existing content and copy report
+    #     ls -la
+    #     # rm -rf *
+    #     cp report.html pages/index.html
 
-        # Commit and push
-        cd pages
-        git add index.html
-        echo "git add"
-        git commit -m "Update test report at $(date -u +"%Y-%m-%d %H:%M:%S")" || echo "Nothing to commit"
-        echo "git commit"
-        git push "$TARGET" --set-upstream master
+    #     # Commit and push
+    #     cd pages
+    #     git add index.html
+    #     echo "git add"
+    #     git commit -m "Update test report at $(date -u +"%Y-%m-%d %H:%M:%S")" || echo "Nothing to commit"
+    #     echo "git commit"
+    #     git push "$TARGET" --set-upstream master
 
