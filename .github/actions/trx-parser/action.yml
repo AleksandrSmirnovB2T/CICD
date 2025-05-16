@@ -23,6 +23,7 @@ runs:
         git switch --force-create gh-pages
 
         # Clear existing content and copy report
+        ls -la
         rm -rf *
         cp report.html index.html
 
