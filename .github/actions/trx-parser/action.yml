@@ -24,7 +24,7 @@ runs:
 
         # Clear existing content and copy report
         ls -la
-        rm -rf *
+        # rm -rf *
         cp report.html index.html
 
         # Commit and push
