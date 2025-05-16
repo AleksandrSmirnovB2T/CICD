@@ -24,7 +24,7 @@ runs:
         # git fetch origin gh-pages || git checkout --orphan gh-pages
         # git switch --force-create gh-pages
         # TARGET="https://$USER_NAME:$API_TOKEN_GITHUB@github.com/$DESTINATION_REPOSITORY_USERNAME/$DESTINATION_REPOSITORY_NAME.git"
-        TARGET=""https://AleksandrSmirnovB2T:${{ inputs.token }}@github.com/AleksandrSmirnovB2T/CICD"
+        TARGET="https://AleksandrSmirnovB2T:${{ inputs.token }}@github.com/AleksandrSmirnovB2T/CICD"
         git clone --single-branch --branch "$TARGET_BRANCH" "$TARGET" .
 
 
