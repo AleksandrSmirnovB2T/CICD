@@ -81,7 +81,12 @@ jobs:
           path: built
 
       - name: Unit tests
+        if: hashFiles('built/${{ inputs.test_path }}') != ''
         run:  dotnet test built/${{ inputs.test_path }} --no-build --no-restore --logger "trx;LogFileName=TestResults.trx" --filter "FullyQualifiedName!~Integration"
+
+      - name: Unit tests skipped
+        if: hashFiles('built/${{ inputs.test_path }}') == ''
+        run: echo "No tests were found"
 
       - name: Upload Test Results
         if: always()
@@ -104,6 +109,7 @@ jobs:
       #    reporter: dotnet-trx
 
       - name: Publish Test Results
+        if: hashFiles('TestResults/TestResults.trx') != ''
         uses: AleksandrSmirnovB2T/CICD/.github/actions/trx-parser@master
         with:
           path: "TestResults/TestResults.trx"
