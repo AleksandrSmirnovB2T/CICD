@@ -81,11 +81,11 @@ jobs:
           path: built
 
       - name: Unit tests
-        if: hashFiles('built/${{ inputs.test_path }}') != ''
+        if: hashFiles('built/${{ inputs.test_path }}') == ''
         run:  dotnet test built/${{ inputs.test_path }} --no-build --no-restore --logger "trx;LogFileName=TestResults.trx" --filter "FullyQualifiedName!~Integration"
 
       - name: Unit tests skipped
-        if: hashFiles('built/${{ inputs.test_path }}') == ''
+        if: hashFiles('built/${{ inputs.test_path }}') != ''
         run: echo "No tests were found"
 
       - name: Upload Test Results
