@@ -56,14 +56,14 @@ def parse_trx(trx_file):
             duration_str = elem.attrib.get('duration', '0:00:00.000')
             try:
                 # Convert duration format to seconds
-                time_obj = datetime.strptime(duration_str[0:15], "%H:%M:%S.%f")
-    
-                # Convert to total milliseconds
-                hours = time_obj.hour
-                minutes = time_obj.minute
-                seconds = time_obj.second
-                microseconds = time_obj.microsecond
-                duration = (hours * 3600 + minutes * 60 + seconds) * 1000 + microseconds / 1000
+                parts = duration_str.split(':')
+                if len(parts) == 3:
+                    hours, minutes, seconds = parts
+                    seconds, microsec_str = seconds.split('.') if '.' in seconds else (seconds, '0')
+                    microseconds = int(microsec_str.ljust(6, '0')[:6])
+                    duration = (int(hours) * 3600) + (int(minutes) * 60) + int(seconds) + (microseconds / 1_000_000)
+                else:
+                    duration = 0.0
             except (ValueError, IndexError):
                 duration = 0.0
             
