@@ -78,13 +78,12 @@ jobs:
       - name: find built files
         if: always()
         run: |
-          ls -la
           ls -la built
 
       - name: Check for any *.Tests.dll files
         id: check_tests
         run: |
-          TEST_DLLS=$(find . -type f -name "built/${{ inputs.test_path }}")
+          TEST_DLLS=$(find . -type f -path "built/" -name "${{ inputs.test_path }}")
           echo "Found test DLLs:"
           echo "$TEST_DLLS"
           if [ -n "$TEST_DLLS" ]; then
