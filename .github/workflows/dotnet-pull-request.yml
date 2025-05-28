@@ -108,12 +108,6 @@ jobs:
           name: TestResults
           path: "**/TestResults.trx"
 
-      - name: find trx file
-        if: always()
-        run: |
-          ls -la
-          ls TestResults/TestResults.trx
-
       #- name: Publish Test Results
       #  if: always()
       #  uses: dorny/test-reporter@v1
