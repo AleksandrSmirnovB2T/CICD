@@ -75,6 +75,12 @@ jobs:
           name: built
           path: built
 
+      - name: find built files
+        if: always()
+        run: |
+          ls -la
+          ls -la built
+
       - name: Check for any *.Tests.dll files
         id: check_tests
         run: |
