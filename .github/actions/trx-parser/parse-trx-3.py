@@ -2,6 +2,7 @@ import os
 import sys
 import xml.etree.ElementTree as ET
 from collections import defaultdict
+from datetime import datetime
 
 def parse_trx(trx_file):
     """Parse TRX file and generate test summary with optimized memory usage"""
@@ -55,13 +56,14 @@ def parse_trx(trx_file):
             duration_str = elem.attrib.get('duration', '0:00:00.000')
             try:
                 # Convert duration format to seconds
-                parts = duration_str.split(':')
-                if len(parts) == 3:
-                    hours, minutes, seconds = parts
-                    seconds, milliseconds = seconds.split('.') if '.' in seconds else (seconds, '0')
-                    duration = (int(hours) * 3600) + (int(minutes) * 60) + int(seconds) + (int(milliseconds) / 1000)
-                else:
-                    duration = 0.0
+                time_obj = datetime.strptime(duration_str[0:15], "%H:%M:%S.%f")
+    
+                # Convert to total milliseconds
+                hours = time_obj.hour
+                minutes = time_obj.minute
+                seconds = time_obj.second
+                microseconds = time_obj.microsecond
+                duration = (hours * 3600 + minutes * 60 + seconds) * 1000 + microseconds / 1000
             except (ValueError, IndexError):
                 duration = 0.0
             

@@ -20,7 +20,7 @@ on:
         type: string
       test_path:
         description: 'Path to *.dll files of tests. By default, it is `*.Tests.dll`.'
-        default: '*.Tests.dll'
+        default: '*.Tests1.dll'
         required: false
         type: string
     secrets:
